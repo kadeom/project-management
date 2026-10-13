@@ -9,8 +9,8 @@
 (ID вида `lrN_KK` — список в `out/analysis.md`). 📷 ниже — что снять на этом шаге.
 
 > Автоматический путь (Windows + MS Project): `pip install '.[automation]'` →
-> `py -m automation.ms_project_ui shots` (22 PNG в `automation/results/shots/`) →
-> `py -m automation.fill_report` (вставка в отчёт). Ручные шаги ниже — фолбэк и
+> `python build.py --full` (весь конвейер: XML‖расчёты → .mpp → 22 PNG → вставка
+> в отчёт → `out/Отчёт_ЛР_MS_Project.docx`). Ручные шаги ниже — фолбэк и
 > для отладки/защиты; оба способа дают одни и те же ID `lrN_KK`.
 
 ## 0. Открыть файл проекта (один раз)

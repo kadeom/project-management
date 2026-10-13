@@ -114,6 +114,17 @@ python -m pytest tests -q                # самопроверка
 python build.py --no-xml                 # без Java: только expected.json, analysis.md, отчёт
 ```
 
+Полный конвейер одним прогоном (Windows + установленный MS Project):
+
+```bash
+pip install '.[automation]'              # pywin32, pywinauto, psutil, pillow
+python build.py --full                   # XML‖расчёты (параллельно) → .mpp → 22 скриншота
+                                         #   → вставка в отчёт → out/Отчёт_ЛР_MS_Project.docx
+```
+
+`--full` перезаписывает шаблон отчёта готовым файлом со скриншотами (22/22 `lrN_KK`).
+Без MS Project используйте `python build.py` + ручные скриншоты (CHECKLIST.md).
+
 Готовые `.mpp` (проприетарный бинарь MS Project) уже лежат в `out/` — открывайте их
 напрямую в MS Project, без импорта XML. Если нужно пересобрать `.mpp` после изменения
 `project.yaml` (Windows + установленный MS Project):
@@ -128,13 +139,20 @@ python scripts/xml_to_mpp.py             # out/*.xml → out/*.mpp через CO
 Вместо ручных скриншотов (CHECKLIST.md) можно автоматизировать все 22 шага ЛР1–9.
 Стек: Python 3.10–3.14, pywin32 (COM), pywinauto (UIA), Pillow (захват окна),
 python-docx (вставка в отчёт); нужен установленный MS Project 2016/365 (русский
-интерфейс) — модель данных берётся из `out/*.mpp`.
+интерфейс) — модель данных берётся из `out/*.xml`/`out/*.mpp`.
 
 ```bash
 pip install '.[automation]'                          # pywin32, pywinauto, psutil, pillow
+python build.py --full                               # весь конвейер одним прогоном
+# или по шагам:
 py -m automation.ms_project_ui shots                 # 22 PNG → automation/results/shots/
-py -m automation.fill_report                         # вставка в отчёт → automation/results/*_готовый.docx
+py -m automation.fill_report --dst out/Отчёт_ЛР_MS_Project.docx
 ```
+
+`build.py --full` внутри себя: XML‖расчёты (параллельно, ThreadPoolExecutor) →
+`scripts/xml_to_mpp.py` → `automation.ms_project_ui shots` → `automation.fill_report`.
+COM-шаги последовательны (один WINPROJ.exe на машине); параллельна только
+Python-часть сборки (JVM ‖ расчёты).
 
 ID снимков (`lr1_01` … `lr9_03`) совпадают с метками в `out/Отчёт_ЛР_MS_Project.docx`
 (источник — `pm/report.py::shots`). Каждый шаг изолирован: упавший не роняет прогон,

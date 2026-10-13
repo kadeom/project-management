@@ -12,6 +12,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+# Печать не должна падать на не-ASCII консолях (cp1252 и пр.) — см. T34.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 import win32com.client
 
 ROOT = Path(__file__).resolve().parents[1]

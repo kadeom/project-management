@@ -3,8 +3,11 @@
 
     python3 build.py            # XML-файлы для MS Project + расчёты + отчёт .docx
     python3 build.py --no-xml   # только расчёты и отчёт (без Java/MPXJ)
+    python3 build.py --full     # то же + .mpp + 22 скриншота + финальный отчёт
+                                #   (Windows + MS Project; шаги COM последовательны)
 
-Результат — в out/.
+Результат — в out/. Режим --full дополнительно прогоняет automation/ и кладёт
+готовый (со скриншотами) отчёт поверх шаблона out/Отчёт_ЛР_MS_Project.docx.
 
 Пакет подключается из исходников (`sys.path.insert` с каталогом скрипта) — штатный
 PyPA-паттерн «run from source»: скрипт работает без установки. Не заменять на
@@ -14,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import threading
 from pathlib import Path
 
 # Печать не должна падать на не-ASCII консолях (cp1252 и пр.) — см. T34.
@@ -101,6 +105,61 @@ def expected(project: model.Project) -> dict:
     }
 
 
+def _write_calculations(project: model.Project, out: Path, no_docx: bool,
+                        made: list[tuple[str, str]] | None) -> None:
+    """expected.json + analysis.md (+ шаблон .docx). Чистый Python, без Java/COM.
+
+    Запускается параллельно с build_xml: не читает out/*.xml и не трогает JVM.
+    `made` — список XML-вариантов для раздела «Файлы для MS Project» (можно None).
+    """
+    import json
+    from pm import report
+    # newline="\n": на Windows write_text кладёт CRLF, а .gitattributes требует LF →
+    # каждый прогон иначе помечает файл изменённым в git status (шум). См. T34.
+    (out / paths.EXPECTED_JSON).write_text(json.dumps(expected(project), ensure_ascii=False, indent=1),
+                                          encoding="utf-8", newline="\n")
+    print(f"✓ {out / paths.EXPECTED_JSON}")
+    md = report.markdown(project, made)
+    (out / paths.ANALYSIS_MD).write_text(md, encoding="utf-8", newline="\n")
+    print(f"✓ {out / paths.ANALYSIS_MD}")
+    if not no_docx:
+        path = report.docx(project, out / paths.REPORT_DOCX)
+        print(f"✓ {path}")
+
+
+def run_full_pipeline(out: Path) -> int:
+    """Конвейер COM: .mpp → 22 скриншота → вставка в отчёт → готовый .docx в out/.
+
+    Windows + установленный MS Project (автоматизация automation/). Шаги
+    последовательны: один экземпляр WINPROJ.exe на машине, параллельный COM
+    конфликтует. Возвращает код завершения (0 — успех, 1 — любой шаг упал).
+    """
+    import subprocess
+    steps = [
+        ("XML→.mpp", [sys.executable, "scripts/xml_to_mpp.py"]),
+        ("скриншоты ЛР1–9", [sys.executable, "-m", "automation.ms_project_ui", "shots"]),
+        ("вставка скриншотов в отчёт", [sys.executable, "-m", "automation.fill_report",
+                                        "--dst", str(out / paths.REPORT_DOCX)]),
+    ]
+    for label, cmd in steps:
+        print(f"\n— {label}: {' '.join(cmd[1:])}", flush=True)
+        try:
+            r = subprocess.run(cmd, cwd=HERE, timeout=900,
+                               # Не тащим stderr родителя: иначе cp1252-консоль
+                               # ломает кириллицу в трейсбеках подчинённого.
+                               env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+        except subprocess.TimeoutExpired:
+            print(f"✗ шаг «{label}» завис (>15 мин) — прерван")
+            return 1
+        if r.returncode != 0:
+            print(f"✗ шаг «{label}» упал (код {r.returncode}) — см. сообщения выше")
+            return 1
+    ready = out / paths.REPORT_DOCX
+    size = ready.stat().st_size if ready.exists() else 0
+    print(f"\n✓ полный конвейер: {ready} ({size} bytes)")
+    return 0
+
+
 def main() -> int:
     """Точка входа: разобрать аргументы и собрать out/ (XML, expected.json, analysis.md, .docx).
 
@@ -110,6 +169,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--no-xml", action="store_true", help="не генерировать XML (не нужна Java)")
     ap.add_argument("--no-docx", action="store_true", help="не генерировать отчёт .docx")
+    ap.add_argument("--full", action="store_true",
+                    help="после сборки: .mpp + скриншоты + финальный отчёт (Windows + MS Project)")
     ap.add_argument("--out", type=Path, default=None,
                     help=f"каталог вывода (по умолчанию {OUT}; для теста детерминизма)", metavar="DIR")
     args = ap.parse_args()
@@ -117,24 +178,39 @@ def main() -> int:
     out = args.out or OUT
     project = model.load(paths.PROJECT_YAML)
     out.mkdir(exist_ok=True)
-    made = [] if args.no_xml else build_xml(project, out)
 
-    import json
-    # newline="\n": на Windows write_text кладёт CRLF, а .gitattributes требует LF →
-    # каждый прогон иначе помечает файл изменённым в git status (шум). См. T34.
-    (out / paths.EXPECTED_JSON).write_text(json.dumps(expected(project), ensure_ascii=False, indent=1),
-                                          encoding="utf-8", newline="\n")
-    print(f"✓ {out / paths.EXPECTED_JSON}")
+    if args.no_xml:
+        _write_calculations(project, out, args.no_docx, made=None)
+    else:
+        # Список XML-вариантов известен статически — не ждём build_xml, чтобы
+        # analysis.md сразу ушёл с разделом «Файлы для MS Project».
+        made_static = [(name, desc) for name, desc, _, _ in VARIANTS]
+        # Параллельно: XML (JVM) в фоне ‖ расчёты/отчёт в главном потоке.
+        # JVM поднимаем в главном ДО старта фонового потока: JPype не
+        # потокобезопасен при старте из worker-потока.
+        from pm import msproject as ms
+        ms.jvm()
+        err: list[BaseException] = []
 
-    from pm import report
-    md = report.markdown(project, made)
-    (out / paths.ANALYSIS_MD).write_text(md, encoding="utf-8", newline="\n")
-    print(f"✓ {out / paths.ANALYSIS_MD}")
-    if not args.no_docx:
-        path = report.docx(project, out / paths.REPORT_DOCX)
-        print(f"✓ {path}")
-    for name, _ in made:
-        print(f"✓ {out / name}")
+        def _xml():
+            try:
+                build_xml(project, out)
+            except BaseException as e:  # noqa: BLE001 — пробрасываем в main
+                err.append(e)
+
+        t = threading.Thread(target=_xml, name="build-xml", daemon=True)
+        t.start()
+        _write_calculations(project, out, args.no_docx, made=made_static)
+        t.join()
+        if err:
+            raise err[0]
+        for name, _ in made_static:
+            print(f"✓ {out / name}")
+
+    if args.full:
+        if args.out:
+            print("предупреждение: --full всегда работает с каталогом out/ проекта, --out игнорируется")
+        return run_full_pipeline(OUT)
     return 0
 
 
