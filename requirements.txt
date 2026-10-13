@@ -1,0 +1,16 @@
+# Зеркало pyproject.toml: [project].dependencies + [project.optional-dependencies].dev.
+# Править ТОЛЬКО вместе с pyproject.toml; сверяет тест test_requirements_match_pyproject.
+# Установка: pip install -r tools/project-management/requirements.txt
+#
+# Окружение: Python 3.10–3.14 (пол задают pytest 9 и Pillow 12 — оба requires-python >=3.10;
+# потолок — JPype1 1.7.1: нет cp315-wheels, выше 3.14 пакет не ставится).
+# Java 8+ (JVM) — официальный минимум MPXJ; проверено на 21. Разрядность JVM = разрядности Python.
+pyyaml>=6
+mpxj==16.10.0
+JPype1==1.7.1
+python-docx>=1.1
+pytest>=8
+pillow>=10
+pip-audit>=2
+bandit>=1.8
+ruff>=0.9

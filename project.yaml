@@ -1,0 +1,106 @@
+# Единый источник данных учебного проекта для лабораторных работ по MS Project.
+# Всё остальное (XML для MS Project, расчёты, отчёт) генерируется из этого файла:
+#   python build.py
+#
+# Длительности — в рабочих днях (8 ч). pert: [оптимистическая, наиболее вероятная, пессимистическая].
+# Связи: "ключ" = ОН (FS); "ключ:НН+2" = начало-начало с запаздыванием 2 дня;
+#        типы ОН/НН/ОО/НО (FS/SS/FF/SF), запаздывание в днях (может быть отрицательным).
+#
+# Тема учебного проекта — «Организация научно-практической конференции».
+# Такой пример используется в методических указаниях (МУ по УП.docx, раздел про
+# заметки/гиперссылки: задачи «первое заседание оргкомитета», «рассылка первого
+# сообщения», «подготовка сборника к печати» и др.).
+
+project:
+  name: "Организация научно-практической конференции"
+  short: "KONF-2026"
+  author: "Студент"
+  company: "Учебный проект"
+  start: 2026-10-05          # понедельник; поменяйте при необходимости
+  currency: "₽"
+  currency_code: "RUB"
+  repo: "https://github.com/kadeom/project-management"
+
+calendar:
+  name: "Стандартный"
+  work_hours: [["08:00", "12:00"], ["13:00", "17:00"]]
+  exceptions:                 # нерабочие периоды (ЛР1, задание 4)
+    - {name: "День народного единства", from: 2026-11-04, to: 2026-11-04}
+    - {name: "Новогодние каникулы", from: 2026-12-31, to: 2027-01-08}
+    - {name: "День защитника Отечества", from: 2027-02-23, to: 2027-02-23}
+
+# Ставки в ₽/ч. rate_b — таблица норм затрат B (ЛР5, задание 4); rate_change — ставка с даты (ЛР5, задание 2).
+resources:
+  - {key: PM,  name: "Иванов И.И.",   role: "Руководитель проекта",     initials: "ИИИ", group: "Управление", dept: "ОРГ.КООРД",  rate: 1200, ot: 1800, rate_b: 1400,
+     rate_change: {from: 2027-01-11, rate: 1300},
+     availability: [{from: 2026-10-05, to: 2026-10-16, units: 0.5}, {from: 2026-10-17, to: 2026-10-25, units: 0}, {from: 2026-10-26, to: null, units: 1.0}]}
+  - {key: SEC, name: "Сорокина С.Т.", role: "Координатор конференции",   initials: "ССТ", group: "Оргкомитет", dept: "ОРГ.КООРД", rate: 1000, ot: 1500, rate_b: 1150}
+  - {key: UX,  name: "Петров П.П.",   role: "Дизайнер афиш и программ",  initials: "ППП", group: "Дизайн",     dept: "ДИЗ.ГРАФ", rate: 900,  ot: 1350, rate_b: 1000}
+  - {key: FE,  name: "Смирнова А.В.", role: "Секретарь оргкомитета",     initials: "САВ", group: "Секретариат", dept: "ОРГ.СЕКР", rate: 1100, ot: 1650, rate_b: 1250}
+  - {key: BE,  name: "Кузнецов Д.А.", role: "Технический специалист",    initials: "КДА", group: "Техника",    dept: "ТЕХН.ОТД", rate: 1100, ot: 1650, rate_b: 1250}
+  - {key: MET, name: "Орлова Е.Н.",   role: "Методист, программный комитет", initials: "ОЕН", group: "Методика", dept: "МЕТ.ПК",  rate: 700,  ot: 1050, rate_b: 800}
+  - {key: QA,  name: "Волков М.С.",   role: "Куратор приёмной комиссии", initials: "ВМС", group: "Приём",      dept: "ПРИЁМ.РЕГ", rate: 800,  ot: 1200, rate_b: 900, per_use: 500}
+  - {key: PAPER, name: "Печать программ", type: material, label: "лист", rate: 5, group: "Материалы"}
+  - {key: VPS,   name: "Аренда зала и техники", type: cost, group: "Инфраструктура"}
+
+# Коды структуры для задач (ЛР9, задание 9) — «Код работ».
+work_codes:
+  ОРГ: {name: "Организация", children: {ПОДГ: "Подготовительные работы", ДОК: "Документирование"}}
+  ПК:  {name: "Программный комитет", children: {АНН: "Аннотации", РЕЦ: "Рецензирование"}}
+  ЛОГ: {name: "Логистика", children: {ЗАЛ: "Зал и техника", ТРАНС: "Транспорт и размещение"}}
+  МАТ: {name: "Материалы", children: {ПРОГ: "Программы", СБОР: "Сборник тезисов"}}
+  ПР:  {name: "Публичность", children: {САЙТ: "Сайт", РАССЫЛ: "Рассылка"}}
+  ПРИЁМ: {name: "Приём участников", children: {РЕГ: "Регистрация"}}
+
+# Коды структуры для ресурсов (ЛР9, задание 12) — «Код отделов».
+dept_codes:
+  ОРГ:  {name: "Оргкомитет", children: {КООРД: "Координация", СЕКР: "Секретариат"}}
+  ДИЗ:  {name: "Творческая группа", children: {ГРАФ: "Графика", ВЕБ: "Веб"}}
+  ТЕХН: {name: "Техническая служба", children: {ОТД: "Обеспечение зала"}}
+  МЕТ:  {name: "Методическая группа", children: {ПК: "Программный комитет"}}
+  ПРИЁМ: {name: "Приёмная комиссия", children: {РЕГ: "Регистрация"}}
+
+# Фазы и задачи. Веха = duration 0. res: {КЛЮЧ: доля} (1 = 100 %).
+phases:
+  - name: "Инициация"
+    tasks:
+      - {key: kick, name: "Первое заседание оргкомитета", dur: 1, pert: [1, 1, 2], res: {PM: 1, SEC: 1}, code: ОРГ.ПОДГ,
+         note: "Повестка дня:\n1. Цели и тематика конференции.\n2. Состав оргкомитета и программного комитета.\n3. Ограничения: бюджет, сроки, вместимость зала.\n4. План-график подготовки программы."}
+      - {key: problem, name: "Определение тематики и целевой аудитории", dur: 4, pert: [3, 4, 6], after: [kick], res: {SEC: 1, PM: 0.5}, code: ОРГ.ПОДГ,
+         link: "https://github.com/kadeom/project-management/blob/main/README.md"}
+      - {key: charter, name: "Разработка положения о конференции", dur: 3, pert: [2, 3, 5], after: [problem], res: {PM: 1}, code: ОРГ.ДОК}
+      - {key: m_charter, name: "Положение утверждено", dur: 0, after: [charter]}
+
+  - name: "Программный комитет"
+    tasks:
+      - {key: announces, name: "Сбор аннотаций и тезисов", dur: 5, pert: [4, 5, 8], after: [m_charter], res: {MET: 1}, code: ПК.АНН,
+         link: "https://github.com/kadeom/project-management/blob/main/project.yaml"}
+      - {key: review, name: "Рецензирование материалов", dur: 4, pert: [3, 4, 6], after: [announces], res: {MET: 1}, code: ПК.РЕЦ}
+      - {key: program, name: "Формирование программы конференции", dur: 3, pert: [2, 3, 5], after: [review], res: {SEC: 1, MET: 0.5}, code: ПК.АНН}
+      - {key: m_program, name: "Программа утверждена", dur: 0, after: [program]}
+
+  - name: "Логистика"
+    tasks:
+      - {key: venue, name: "Подбор зала и технического оборудования", dur: 4, pert: [3, 4, 6], after: [m_charter], res: {BE: 1}, code: ЛОГ.ЗАЛ,
+         fixed_cost: 50000, accrual: start}
+      - {key: catering, name: "Организация кофе-брейков и обеда", dur: 3, pert: [2, 3, 5], after: ["venue:НН+1"], res: {FE: 1, BE: 0.5}, code: ЛОГ.ТРАНС}
+      - {key: transport, name: "Транспорт и размещение спикеров", dur: 5, pert: [4, 5, 8], after: [venue, "catering:ОО"], res: {FE: 0.5, QA: 0.5}, code: ЛОГ.ТРАНС}
+      - {key: m_logistics, name: "Логистика подтверждена", dur: 0, after: [catering, transport]}
+
+  - name: "Материалы и публичность"
+    tasks:
+      - {key: website, name: "Создание сайта конференции", dur: 6, pert: [4, 6, 9], after: [m_program], res: {UX: 1}, code: ПР.САЙТ}
+      - {key: mailout, name: "Рассылка первого сообщения", dur: 2, pert: [1, 2, 3], after: [website], res: {FE: 1}, code: ПР.РАССЫЛ,
+         note: "Список рассылки:\n- участники прошлых лет\n- партнёрские вузы\n- профильные кафедры"}
+      - {key: printing, name: "Печать программ и бейджей", dur: 3, pert: [2, 3, 5], after: [m_logistics], res: {PAPER: 500}, code: МАТ.ПРОГ}
+      - {key: proceedings, name: "Подготовка сборника тезисов к печати", dur: 4, pert: [3, 4, 7], after: [review], res: {MET: 1, PAPER: 300}, code: МАТ.СБОР}
+      - {key: m_ready, name: "Материалы готовы", dur: 0, after: [printing, proceedings, mailout]}
+
+  - name: "Проведение"
+    tasks:
+      - {key: registration, name: "Регистрация участников", dur: 1, pert: [1, 1, 1], after: [m_ready], res: {QA: 1}, code: ПРИЁМ.РЕГ,
+         constraint: {type: SNET, date: 2026-10-05}}
+      - {key: opening, name: "Открытие и пленарное заседание", dur: 1, pert: [1, 1, 2], after: [registration], res: {PM: 1, SEC: 1}, code: ОРГ.ПОДГ}
+      - {key: sections, name: "Работа секций", dur: 2, pert: [2, 2, 3], after: [opening], res: {MET: 1, BE: 0.5}, code: ОРГ.ПОДГ}
+      - {key: closing, name: "Заключительная сессия и подведение итогов", dur: 1, pert: [1, 1, 2], after: [sections], res: {PM: 1}, code: ОРГ.ДОК}
+      - {key: m_done, name: "Конференция завершена", dur: 0, after: [closing], deadline: 2026-11-23}
