@@ -14,3 +14,8 @@ pillow>=10
 pip-audit>=2
 bandit>=1.8
 ruff>=0.9
+# automation/ (Windows + MS Project COM): необязательно для расчётов/тестов,
+# только для скриншотов и вставки их в отчёт — pip install '.[automation]'
+# pywin32>=306
+# pywinauto>=0.6
+# psutil>=5

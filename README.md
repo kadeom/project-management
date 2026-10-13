@@ -25,6 +25,8 @@
 | `pm/report.py` | Генерация отчёта .docx (шаблон + таблицы) | Итоговый отчёт по ЛР |
 | `pm/paths.py` | SSOT путей и имён артефактов (манитест `out/`) | Согласованность всех скриптов |
 | `scripts/xml_to_mpp.py` | Конвертация XML→`.mpp` через COM-автоматизацию MS Project (Windows + MS Project) | Готовые `.mpp` для студентов |
+| `automation/ms_project_ui.py` | UI-автоматизация MS Project (COM + UIA): скриншоты 22 шагов ЛР1–9 | Автозаполнение отчёта |
+| `automation/fill_report.py` | Вставка PNG-скриншотов в `.docx`-отчёт по меткам `lrN_KK` | Готовый отчёт для сдачи |
 | `tests/test_pm.py` | Автотесты модели, покрытия требований ЛР, XML, ссылок | Самопроверка перед сдачей |
 | `requirements.txt`, `pyproject.toml` | Зависимости (pyyaml, mpxj, JPype1, python-docx, pytest) | Воспроизводимое окружение |
 | `МУ по УП.docx` | Методические указания (источник требований к ЛР и защите) | Официальный источник формулировок |
@@ -120,6 +122,41 @@ python build.py --no-xml                 # без Java: только expected.js
 pip install pywin32
 python scripts/xml_to_mpp.py             # out/*.xml → out/*.mpp через COM
 ```
+
+## Автоскриншоты отчёта (Windows + MS Project)
+
+Вместо ручных скриншотов (CHECKLIST.md) можно автоматизировать все 22 шага ЛР1–9.
+Стек: Python 3.10–3.14, pywin32 (COM), pywinauto (UIA), Pillow (захват окна),
+python-docx (вставка в отчёт); нужен установленный MS Project 2016/365 (русский
+интерфейс) — модель данных берётся из `out/*.mpp`.
+
+```bash
+pip install '.[automation]'                          # pywin32, pywinauto, psutil, pillow
+py -m automation.ms_project_ui shots                 # 22 PNG → automation/results/shots/
+py -m automation.fill_report                         # вставка в отчёт → automation/results/*_готовый.docx
+```
+
+ID снимков (`lr1_01` … `lr9_03`) совпадают с метками в `out/Отчёт_ЛР_MS_Project.docx`
+(источник — `pm/report.py::shots`). Каждый шаг изолирован: упавший не роняет прогон,
+журнал — `automation/results/run_log.json`. Для диагностики/человеческой подстраховки
+оставьте ручной путь из CHECKLIST.md: оба способа дополняют друг друга, не конфликтуют.
+
+## Рекомендуемые LSP
+
+Для разработки на Python в этом репо:
+
+- **basedpyright** — строгая типизация (аналог pyright с дополнительными правилами);
+  ставится один раз `pip install basedpyright` (или `npm i -g basedpyright`).
+- **ruff** — линт/форматирование, уже в `dev`-зависимостях (`ruff>=0.9`).
+
+Автопроверка перед коммитом/PR — `.github/workflows/ci.yml` (ruff, pytest). В opencode
+LSP поднимается автоматически, если установлен; для ручной проверки типов вне CI:
+
+```bash
+basedpyright                                # или pyright, если он уже в PATH
+ruff check pm automation tests
+```
+
 
 ## Лицензия
 

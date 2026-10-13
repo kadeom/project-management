@@ -18,6 +18,9 @@ from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]   # корень репозитория
 OUT = PACKAGE_ROOT / "out"                           # генерирует build.py (XML, expected.json, analysis.md, .docx)
+AUTOMATION = PACKAGE_ROOT / "automation"             # UI-автоматизация MS Project (скриншоты, fill_report)
+RESULTS = AUTOMATION / "results"                     # runtime-результаты automation/ (gitignore)
+SHOTS = RESULTS / "shots"                            # PNG-скриншоты lrN_KK для вставки в отчёт
 
 PROJECT_YAML = PACKAGE_ROOT / "project.yaml"
 
@@ -38,6 +41,12 @@ MPP_VARIANTS = [name.replace(".xml", ".mpp") for name in XML_VARIANTS]
 EXPECTED_JSON = "expected.json"
 ANALYSIS_MD = "analysis.md"
 REPORT_DOCX = "Отчёт_ЛР_MS_Project.docx"              # заготовка из report.docx (build.py)
+REPORT_READY_DOCX = "Отчёт_ЛР_MS_Project_готовый.docx"  # после вставки скриншотов (automation/fill_report.py)
+
+# .mpp, который пересобирает automation/ms_project_ui.py (lr9_02 → lr9_03): в нём
+# добавлены настраиваемые поля «Общая стоимость» / «% от общей стоимости». Лежит в
+# RESULTS (не в out/): это runtime-артефакт, а не канонический MANIFEST.
+MPP_LR9_COSTS = "09_costs_LR9.mpp"
 
 # ---------- манифест: исчерпывающий перечень канонических файлов ----------
 
