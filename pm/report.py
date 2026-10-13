@@ -242,13 +242,12 @@ def with_shot_ids(B: list[tuple]) -> list[tuple]:
 
 
 def shots(project: Project) -> list[dict]:
-    """Метки мест под скриншоты: [{id, caption}] — их же ждёт скрипт ВМ (набор ID)."""
+    """Метки мест под скриншоты: [{id, caption}] — ID вида lrN_KK для нумерации в отчёте."""
     return [{"id": b[2], "caption": b[1]} for b in blocks(project) if b[0] == "shot"]
 
 
-# Метка в .docx, которую ищет vm/fill_report.py и заменяет картинкой. Формат
-# (пробелы, двоеточие, ID вида lrN_KK) — контракт с его регулярным выражением:
-# менять только в паре с fill_report.MARK.
+# Метка в .docx — место под скриншот. Формат (пробелы, двоеточие, ID вида lrN_KK)
+# фиксирован: скриншоты вставляются вручную (CHECKLIST.md, раздел 0).
 SHOT_MARK = "[ Вставьте скриншот {id}: {caption} ]"
 
 
@@ -306,7 +305,7 @@ def docx(project: Project, path: Path) -> Path:
 
     Форма отчёта: A4, поля 2 см, Times New Roman 12 (шрифт таблиц — 9),
     каждая ЛР с новой страницы. Скриншоты остаются метками SHOT_MARK + подписью
-    «Рисунок» — их подставляет vm/fill_report.py по ID.
+    «Рисунок» — вставляются вручную по ID (CHECKLIST.md, раздел 0).
 
     Returns:
         Путь к записанному файлу.
