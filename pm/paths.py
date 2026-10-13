@@ -30,6 +30,11 @@ XML_PERT_IN = "03_pert_input_LR8.xml"
 XML_PERT_OUT = "04_pert_result_LR8.xml"
 XML_VARIANTS = [XML_PLAN, XML_FULL, XML_FULL_SAFE, XML_PERT_IN, XML_PERT_OUT]
 
+# .mpp — проприетарный бинарь MS Project; создаётся scripts/xml_to_mpp.py из XML
+# через COM-автоматизацию (нужен установленный MS Project). Закоммичены для удобства:
+# студент открывает .mpp напрямую, без ручного импорта XML.
+MPP_VARIANTS = [name.replace(".xml", ".mpp") for name in XML_VARIANTS]
+
 EXPECTED_JSON = "expected.json"
 ANALYSIS_MD = "analysis.md"
 REPORT_DOCX = "Отчёт_ЛР_MS_Project.docx"              # заготовка из report.docx (build.py)

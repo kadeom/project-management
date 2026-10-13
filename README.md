@@ -24,6 +24,7 @@
 | `pm/analysis.py` | PERT, сценарии сокращения, сводка по фазам/кодам | ЛР8, аналитическая часть отчёта |
 | `pm/report.py` | Генерация отчёта .docx (шаблон + таблицы) | Итоговый отчёт по ЛР |
 | `pm/paths.py` | SSOT путей и имён артефактов (манитест `out/`) | Согласованность всех скриптов |
+| `scripts/xml_to_mpp.py` | Конвертация XML→`.mpp` через COM-автоматизацию MS Project (Windows + MS Project) | Готовые `.mpp` для студентов |
 | `tests/test_pm.py` | Автотесты модели, покрытия требований ЛР, XML, ссылок | Самопроверка перед сдачей |
 | `requirements.txt`, `pyproject.toml` | Зависимости (pyyaml, mpxj, JPype1, python-docx, pytest) | Воспроизводимое окружение |
 | `МУ по УП.docx` | Методические указания (источник требований к ЛР и защите) | Официальный источник формулировок |
@@ -109,6 +110,15 @@ pip install -r requirements.txt          # Python 3.10-3.14 + Java 8+ для MPX
 python build.py                          # сборка всех артефактов в out/
 python -m pytest tests -q                # самопроверка
 python build.py --no-xml                 # без Java: только expected.json, analysis.md, отчёт
+```
+
+Готовые `.mpp` (проприетарный бинарь MS Project) уже лежат в `out/` — открывайте их
+напрямую в MS Project, без импорта XML. Если нужно пересобрать `.mpp` после изменения
+`project.yaml` (Windows + установленный MS Project):
+
+```bash
+pip install pywin32
+python scripts/xml_to_mpp.py             # out/*.xml → out/*.mpp через COM
 ```
 
 ## Лицензия
