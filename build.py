@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Собрать все материалы к лабораторным работам по MS Project из tools/project-management/project.yaml.
+"""Собрать все материалы к лабораторным работам по MS Project из project.yaml.
 
-    python3 tools/project-management/build.py            # XML-файлы для MS Project + расчёты + отчёт .docx
-    python3 tools/project-management/build.py --no-xml   # только расчёты и отчёт (без Java/MPXJ)
+    python3 build.py            # XML-файлы для MS Project + расчёты + отчёт .docx
+    python3 build.py --no-xml   # только расчёты и отчёт (без Java/MPXJ)
 
-Результат — в tools/project-management/out/.
+Результат — в out/.
 
 Пакет подключается из исходников (`sys.path.insert` с каталогом скрипта) — штатный
 PyPA-паттерн «run from source»: скрипт работает без установки. Не заменять на
@@ -69,7 +69,7 @@ def build_xml(project: model.Project, out: Path = OUT) -> list[tuple[str, str]]:
 
 
 def expected(project: model.Project) -> dict:
-    """Эталонные значения для сверки с MS Project на ВМ (tools/project-management/vm/ms_project_labs.py verify).
+    """Эталонные значения для сверки с MS Project (tests/test_pm.py: test_full_xml_roundtrip_fields).
 
     Задачи ключуются именами, а не внутренними ключами модели: у скрипта на
     ВМ есть только то, что видно в самом MS Project, а имена задач уникальны
