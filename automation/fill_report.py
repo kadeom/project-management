@@ -20,7 +20,7 @@ for _stream in (sys.stdout, sys.stderr):
     except (AttributeError, ValueError):
         pass
 
-MARK = re.compile(r"\[ Вставьте скриншот (lr\d+_\d+): .* \]")
+MARK = re.compile(r"\[ Вставьте скриншот ([A-Za-z]{1,6}\d{1,3}_\d{1,3}): .* \]")
 
 
 def images_for(shots: Path, sid: str) -> list[Path]:

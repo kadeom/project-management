@@ -8,3 +8,5 @@ dist/
 .venv/
 venv/
 automation/results/
+additional-assignment/03-jira-trello/steps/profile/
+additional-assignment/03-jira-trello/steps/creds.json

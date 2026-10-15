@@ -100,6 +100,8 @@ class Resource:
     per_use: float = 0.0
     rate_change: dict | None = None
     availability: list[dict] = field(default_factory=list)
+    currency: str | None = None       # валюта цены (USD для импорта); None — базовая проекта
+    rate_src: float | None = None     # цена до конвертации (заполняет currency.apply_fx)
 
 
 @dataclass
@@ -191,8 +193,15 @@ def load(path: str | Path) -> Project:
             tasks.append(task)
             phase.children.append(task.key)
     resources = [Resource(**r) for r in data["resources"]]
-    return Project(data["project"], data["calendar"], resources, tasks,
-                   data.get("work_codes", {}), data.get("dept_codes", {}))
+    project = Project(data["project"], data["calendar"], resources, tasks,
+                      data.get("work_codes", {}), data.get("dept_codes", {}))
+    # Блок fx — курсы онлайн-замера; с ним цены валютных ресурсов переводятся
+    # в базовую валюту, чтобы расписание, смета и XML MS Project считали одно.
+    from . import currency               # локально: currency импортирует model
+    fx = currency.from_yaml(data)
+    if fx:
+        currency.apply_fx(project, fx)
+    return project
 
 
 def pert_days(o: float, m: float, p: float, weights=(1, 4, 1)) -> float:

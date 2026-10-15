@@ -33,6 +33,13 @@ XML_PERT_IN = "03_pert_input_LR8.xml"
 XML_PERT_OUT = "04_pert_result_LR8.xml"
 XML_VARIANTS = [XML_PLAN, XML_FULL, XML_FULL_SAFE, XML_PERT_IN, XML_PERT_OUT]
 
+# XML дополнительного задания (практическая работа, варианты 12/10) — генерирует
+# build_szi.py; документация по варианту лежит в additional-assignment/<variant>/.
+XML_SZI_V12 = "szi_v12_full.xml"
+XML_SZI_V10 = "szi_v10_full.xml"
+XML_SZI_VARIANTS = [XML_SZI_V12, XML_SZI_V10]
+XML_VARIANTS = XML_VARIANTS + XML_SZI_VARIANTS
+
 # .mpp — проприетарный бинарь MS Project; создаётся scripts/xml_to_mpp.py из XML
 # через COM-автоматизацию (нужен установленный MS Project). Закоммичены для удобства:
 # студент открывает .mpp напрямую, без ручного импорта XML.

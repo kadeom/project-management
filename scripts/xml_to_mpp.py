@@ -29,6 +29,9 @@ XML_VARIANTS = [
     "02_full_safe.xml",
     "03_pert_input_LR8.xml",
     "04_pert_result_LR8.xml",
+    # Дополнительное задание (практическая работа, вар. 12/10) — build_szi.py:
+    "szi_v12_full.xml",
+    "szi_v10_full.xml",
 ]
 
 

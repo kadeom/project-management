@@ -27,11 +27,14 @@ def fmt_days(hours: float) -> str:
     return f"{d:g} дн." if abs(d - round(d)) < 1e-9 else f"{d:.2f} дн."
 
 
-def money(x: float) -> str:
-    """Сумма в рублях для отчёта: «12 345,67 ₽» — разряды пробелом, дробная часть через запятую."""
+def money(x: float, suffix: str = "₽") -> str:
+    """Сумма для отчёта: «12 345,67 ₽» — разряды пробелом, дробная часть через запятую.
+
+    `suffix` — единица валюты: «₽» по умолчанию, «сом» — для СЗИ-проектов в KGS.
+    """
     # Русская запись суммы вручную: разряды пробелом, дробная часть через запятую —
     # locale в скрипте не выставляется, format переворачивал бы разделители.
-    return f"{x:,.2f} ₽".replace(",", " ").replace(".", ",")
+    return f"{x:,.2f} {suffix}".replace(",", " ").replace(".", ",")
 
 
 def finish_of(project: Project) -> dt.datetime:
@@ -77,14 +80,15 @@ def _res_text(project: Project, key: str, u: float) -> str:
     """Назначение ресурса для таблицы отчёта: имя плюс единицы в скобках.
 
     Например «Смирнова А.В.» (ровно 100 %), «Орлова Е.Н.[50 %]»,
-    «Печать анкет[200 лист]», «Аренда сервера и домена[18 000 ₽]».
+    «Печать анкет[200 лист]», «Аренда сервера и домена[18 000 ₽]»;
+    если у проекта задана базовая валюта — в её обозначении (сом, ₽).
     """
     r = project.resource(key)
     if r.type == "work":
         return r.name if u == 1 else f"{r.name}[{u * 100:g}%]"
     if r.type == "material":
         return f"{r.name}[{u:g} {r.label}]"
-    return f"{r.name}[{money(u)}]"
+    return f"{r.name}[{money(u, project.meta.get('currency') or '₽')}]"
 
 
 def pert_table(project: Project, weights_list=((1, 4, 1), (1, 3, 2), (1, 2, 3))):
