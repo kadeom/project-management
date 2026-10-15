@@ -3,7 +3,6 @@ import json
 import pathlib
 import time
 
-import requests
 from playwright.sync_api import sync_playwright
 
 BASE = pathlib.Path(__file__).resolve().parent
