@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=77.0.3"]
+requires = ["setuptools>=84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,12 +9,12 @@ description = "MS Project labs toolkit"
 requires-python = ">=3.10"
 # mpxj/JPype1 пинятся точно (T-009): FieldGUID/Ltuid/Guid в XML перестраиваются при смене версии MPXJ,
 # а JPype1 (единственный «потолок» диапазона 3.10–3.14, S-005) — при смене wheels.
-dependencies = ["pyyaml>=6", "mpxj==16.10.0", "JPype1==1.7.1", "python-docx>=1.1"]
+dependencies = ["pyyaml>=6.0.3", "mpxj==16.10.0", "JPype1==1.7.1", "python-docx>=1.2.0"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pillow>=10", "pip-audit>=2", "bandit>=1.8", "ruff>=0.9"]
-automation = ["pywin32>=306; sys_platform == 'win32'", "pywinauto>=0.6; sys_platform == 'win32'",
-              "psutil>=5; sys_platform == 'win32'", "pillow>=10"]
+dev = ["pytest>=9.1.1", "pillow>=12.3.0", "pip-audit>=2.10.1", "bandit>=1.9.4", "ruff>=0.17.2"]
+automation = ["pywin32>=312; sys_platform == 'win32'", "pywinauto>=0.6.9; sys_platform == 'win32'",
+              "psutil>=7.2.2; sys_platform == 'win32'", "pillow>=12.3.0"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
