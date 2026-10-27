@@ -6,9 +6,11 @@
 4. [`architecture/`](architecture/README.md) — конвейер, границы, ADR.
 5. [`guides/checklist.md`](guides/checklist.md) — ручные шаги ЛР1–ЛР9 в MS Project.
 6. [`guides/additional-assignment.md`](guides/additional-assignment.md) — дополнительное задание (PAM, DLP+SIEM).
-7. [`reference/`](reference/README.md) — версии, безопасность, методичка.
-8. [`../BACKLOG.md`](../BACKLOG.md) — задачи.
-9. [`meta/tasks/`](meta/tasks/README.md) — формат задач и история ID.
+7. [`guidelines/methodical-guidelines.md`](guidelines/methodical-guidelines.md) — методические указания (исходник .docx).
+8. [`artifacts/README.md`](artifacts/README.md) — шаблоны устава, рисков, RACI и других документов.
+9. [`reference/`](reference/README.md) — версии, безопасность, методичка.
+10. [`../BACKLOG.md`](../BACKLOG.md) — задачи.
+11. [`meta/tasks/`](meta/tasks/README.md) — формат задач и история ID.
 
 ## Правила
 

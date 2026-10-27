@@ -51,6 +51,22 @@
     "docs/reference/infosec/habr.md": {
       "type": "reference",
       "owner": "maintainers"
+    },
+    "docs/guidelines/methodical-guidelines.md": {
+      "type": "how-to",
+      "owner": "students"
+    },
+    "docs/artifacts/README.md": {
+      "type": "reference",
+      "owner": "students"
+    },
+    "docs/artifacts/example-conference-2026.md": {
+      "type": "example",
+      "owner": "students"
+    },
+    "siw/siw.yaml": {
+      "type": "reference",
+      "owner": "students"
     }
   }
 }

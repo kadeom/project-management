@@ -1,0 +1,7 @@
+# Зависимости Windows-ВМ с установленным MS Project.
+# Ставятся поверх requirements.txt:
+#   py -m pip install -r requirements.txt -r requirements-vm.txt
+pywin32>=306
+pywinauto>=0.6
+psutil>=5
+pillow>=10

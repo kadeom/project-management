@@ -18,8 +18,12 @@
 
 ```bash
 pip install -r requirements.txt     # Python 3.10–3.14, Java 8+ для MPXJ
-python build.py                     # все артефакты в out/
+python build.py                     # все артефакты ЛР в out/
 python build.py --no-xml            # только расчёты и отчёт, без Java
+python build_siw.py                 # отчёт СРС (SIW) из siw/siw.yaml
+python build_guidelines.py          # методические указания → .docx
+python build_artifacts.py           # паспорт проекта → .docx
+python build_all.py --no-xml        # ЛР + СРС + ДЗ + методички + паспорт, без Java
 python build_infosec.py --no-xml    # два документа дополнительного задания
 python -m pytest tests -q           # тесты
 ruff check src/pm automation tests build_infosec.py scripts additional-assignment  # линт
@@ -48,13 +52,19 @@ python build.py --full
 ## Структура
 
 ```text
-src/pm/              пакет расчётов и генераторов (report_infosec, currency)
+src/pm/              пакет расчётов и генераторов (report, report_siw, report_infosec)
 tests/               pytest
 scripts/             конвертация XML→MPP, курсы валют, проверки
 build_infosec.py     сборка двух вариантов дополнительного задания
+build_siw.py         сборка отчёта СРС (SIW)
+build_guidelines.py  Markdown → .docx методических указаний
+build_artifacts.py   Markdown → .docx паспорта проекта
+build_all.py         оркестратор всего комплекта
+siw/                 задания СРС в YAML
+vm/                  Windows-ВМ: прогон, verify, сдача, checksums
 additional-assignment/  модели и отчёты вариантов 10/12
 automation/          Windows COM/UIA (скриншоты, вставка в отчёт)
-docs/                архитектура, ADR, руководства, справочники
+docs/                архитектура, ADR, руководства, шаблоны артефактов
 schemas/             контракт данных (README)
 examples/            примеры формата project.yaml
 out/                 сгенерированные артефакты (закоммичены)

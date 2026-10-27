@@ -9,6 +9,18 @@
 
 ### Added
 
+- СРС (SIW): `siw/siw.yaml`, `build_siw.py`, `src/pm/report_siw.py`,
+  отчёт `out/siw-report.docx` и снимки `siw_lrN_KK`.
+- Методические указания: Markdown-исходник
+  `docs/guidelines/methodical-guidelines.md`, генератор `build_guidelines.py`,
+  общий рендер `src/pm/md_docx.py`, готовый `out/methodical-guidelines.docx`.
+- Оркестратор `build_all.py` для ЛР, СРС, ДЗ и методичек.
+- Шаблоны управленческих артефактов в `docs/artifacts/templates/` и заполненный
+  паспорт проекта `docs/artifacts/example-conference-2026.md`; сборка
+  `build_artifacts.py` → `out/project-artifacts.docx`.
+- Windows-ВМ: `vm/run_all.ps1` (watchdog, stale WINPROJ), `vm/verify.py`,
+  `vm/make_submission.py`, `vm/hash_artifacts.py`, `vm/collect_env.ps1`,
+  `requirements-vm.txt`.
 - Дополнительное задание: варианты 12 (PAM) и 10 (DLP+SIEM),
   `build_infosec.py`, `src/pm/report_infosec.py`, `src/pm/currency.py`.
 - XML и `.mpp` для обоих вариантов: `out/infosec_v12_full.*`, `out/infosec_v10_full.*`.

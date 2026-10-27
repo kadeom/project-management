@@ -31,6 +31,9 @@ type(scope): imperative summary
 
 ```bash
 python build.py --no-xml            # быстро, без Java
+python build_siw.py                 # СРС (SIW)
+python build_guidelines.py          # методические указания
+python build_artifacts.py           # паспорт проекта
 python -m pytest tests -q
 ruff check src/pm automation tests build_infosec.py scripts additional-assignment
 ./scripts/check.sh                  # ссылки + pytest + ruff

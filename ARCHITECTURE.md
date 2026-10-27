@@ -77,6 +77,8 @@ additional-assignment/*/project.yaml ─► build_infosec.py ─┤
 | `src/pm/msproject.py` | MSPDI XML, планировщик MPXJ, чтение обратно | не строит отчёт |
 | `src/pm/analysis.py` | PERT, сценарии сокращения, сводки | не форматирует Word |
 | `src/pm/report.py` | блоки отчёта, Markdown, `.docx` | не считает проект |
+| `src/pm/report_siw.py` | отчёт СРС (SIW) из `siw/siw.yaml` | не дублирует расчёты |
+| `src/pm/md_docx.py` | Markdown → `.docx` для методичек и паспорта | не считает проект |
 | `src/pm/paths.py` | пути, имена, манифест | не содержит логики |
 | `src/pm/currency.py` | курсы НБКР/ЦБ РФ, пересчёт сметы | не строит отчёт |
 | `src/pm/report_infosec.py` | блоки и `.docx` дополнительного задания | не считает CPM |
@@ -92,14 +94,19 @@ additional-assignment/*/project.yaml ─► build_infosec.py ─┤
 | `python build.py` | XML, расчёты, отчёт | Python + Java |
 | `python build.py --no-xml` | JSON, Markdown, `.docx` | Python |
 | `python build.py --full` | всё выше + `.mpp`, скриншоты | Windows + MS Project |
+| `python build_siw.py` | `.md` и `.docx` СРС (SIW) | Python |
+| `python build_guidelines.py` | `.docx` методических указаний | Python |
+| `python build_artifacts.py` | `.docx` паспорта проекта | Python |
+| `python build_all.py` | ЛР + СРС + ДЗ + методички + паспорт | Python (+ Java для XML) |
 | `python build_infosec.py` | `.md`, `.docx`, два XML ДЗ | Python + Java |
 | `python build_infosec.py --full` | всё выше + `.mpp`, 10 скриншотов | Windows + MS Project |
 
 ## 7. Артефакты
 
 Исчерпывающий список — `MANIFEST` в `src/pm/paths.py`. В `out/` лежат семь
-XML-вариантов, семь `.mpp`, `expected.json`, `analysis.md` и отчёт `.docx`.
-Дополнительное задание добавляет `infosec_v12_full.xml` и `infosec_v10_full.xml`.
+XML-вариантов, семь `.mpp`, `expected.json`, `analysis.md`, отчёт по ЛР,
+отчёт СРС (SIW), методические указания. Дополнительное задание добавляет
+`infosec_v12_full.xml` и `infosec_v10_full.xml`.
 `.mpp` не входит в `MANIFEST`: это бинарный артефакт MS Project, а не результат
 Python-сборки.
 

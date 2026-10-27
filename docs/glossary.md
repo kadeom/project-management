@@ -10,6 +10,7 @@ expanded form, but file names, modules and artifact IDs are English.
 | `conf` | conference | KONF — конференция |
 | `assignment` | additional assignment | ДЗ — домашнее задание |
 | `guidelines` | methodological guidelines | МУ — методические указания |
+| `siw` | student independent work | СРС — самостоятельная работа студента |
 | `pam` | privileged access management | — |
 | `dlp` | data loss prevention | — |
 | `siem` | security information and event management | — |

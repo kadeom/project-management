@@ -23,11 +23,20 @@
 | `src/pm/msproject.py` | Генерация и чтение XML MSPDI (через MPXJ/Java) | ЛР1-2, ЛР3-7, ЛР9 (импорт/экспорт) |
 | `src/pm/analysis.py` | PERT, сценарии сокращения, сводка по фазам/кодам | ЛР8, аналитическая часть отчёта |
 | `src/pm/report.py` | Генерация отчёта .docx (шаблон + таблицы) | Итоговый отчёт по ЛР |
+| `src/pm/report_siw.py` | Генерация отчёта СРС (SIW) из `siw/siw.yaml` | Дополнительные задания к ЛР1–9 |
+| `src/pm/md_docx.py` | Markdown → .docx для методичек и шаблонов | Методические указания, документы |
 | `src/pm/paths.py` | SSOT путей и имён артефактов (манитест `out/`) | Согласованность всех скриптов |
 | `src/pm/currency.py` | Курсы НБКР/ЦБ РФ, пересчёт USD→KGS | Смета дополнительного задания |
 | `src/pm/report_infosec.py` | Отчёт по дополнительному заданию (PAM, DLP+SIEM) | Практическая работа |
 | `build_infosec.py` | Сборка двух вариантов ДЗ: `.md`, `.docx`, XML, скриншоты | Дополнительное задание |
+| `build_siw.py` | Сборка отчёта СРС (SIW) из `siw/siw.yaml` | Дополнительные задания к ЛР |
+| `build_guidelines.py` | Сборка методических указаний из Markdown | `out/methodical-guidelines.docx` |
+| `build_artifacts.py` | Сборка паспорта проекта из Markdown | `out/project-artifacts.docx` |
+| `build_all.py` | Оркестратор: ЛР + СРС + ДЗ + методички + паспорт | Весь комплект одной командой |
 | `additional-assignment/` | Модели, отчёты, методички и эксперимент Jira | Варианты 10 и 12 |
+| `siw/` | Задания СРС (SIW) в YAML | Дополнительные задания |
+| `docs/artifacts/` | Шаблоны устава, реестра рисков, RACI и др. | Управленческие документы |
+| `vm/` | Windows-ВМ: прогон, сверка, сдача, checksums | Автоматизация MS Project |
 | `scripts/xml_to_mpp.py` | Конвертация XML→`.mpp` через COM-автоматизацию MS Project (Windows + MS Project) | Готовые `.mpp` для студентов |
 | `automation/ms_project_ui.py` | UI-автоматизация MS Project (COM + UIA): скриншоты 22 шагов ЛР1–9 | Автозаполнение отчёта |
 | `automation/fill_report.py` | Вставка PNG-скриншотов в `.docx`-отчёт по меткам `labN_KK` | Готовый отчёт для сдачи |
@@ -51,9 +60,11 @@ project.yaml ──► src/pm/model.py (загрузка)
       │
       └──► src/pm/report.py (отчёт .docx) ──► out/ms-project-labs-report.docx
 
-build.py ──► вызывает все модули ──► out/ (8 артефактов, см. src/pm/paths.py::MANIFEST)
+build.py ──► вызывает все модули ──► out/ (см. src/pm/paths.py::MANIFEST)
+build_siw.py ──► siw/siw.yaml + project.yaml ──► out/siw-report.docx, out/siw-report.md
+build_guidelines.py ──► docs/guidelines/methodical-guidelines.md ──► out/methodical-guidelines.docx
 build_infosec.py ──► два варианта ДЗ ──► out/infosec_v12_full.xml, out/infosec_v10_full.xml
-tests/ ──► проверяют model, cpm, analysis, msproject, report, paths, ДЗ, валюты, ссылки
+tests/ ──► проверяют model, cpm, analysis, msproject, report, paths, СРС, методички, ДЗ, валюты, ссылки
 ```
 
 ## Термины
@@ -143,6 +154,61 @@ python build_infosec.py --full          # + .mpp и 10 скриншотов (Win
 
 Подробнее — [`docs/guides/additional-assignment.md`](docs/guides/additional-assignment.md).
 Без MS Project используйте `python build.py` + ручные скриншоты ([docs/guides/checklist.md](docs/guides/checklist.md)).
+
+### Весь комплект одной командой
+
+```bash
+python build_all.py              # ЛР + СРС + ДЗ + методички без Java
+python build_all.py --xml        # + XML MSPDI (Java 8+)
+python build_all.py --full       # + .mpp и скриншоты (Windows + MS Project)
+```
+
+### СРС (SIW)
+
+Самостоятельная работа студента — дополнительные задания к ЛР1–9. Задания
+лежат в [`siw/siw.yaml`](siw/siw.yaml), отчёт собирается из `project.yaml`:
+
+```bash
+python build_siw.py              # out/siw-report.md + out/siw-report.docx
+```
+
+В именах файлов и ID снимков используется английское сокращение **SIW**
+(student independent work); в русском тексте — «СРС». Скриншоты `siw_lrN_KK`
+вставляются тем же `automation.fill_report`, что и лабораторные.
+
+### Методические указания
+
+Исходник — [`docs/guidelines/methodical-guidelines.md`](docs/guidelines/methodical-guidelines.md)
+(заголовки, таблицы, списки и front matter). Готовый `.docx` не правят руками:
+
+```bash
+python build_guidelines.py       # out/methodical-guidelines.docx
+```
+
+Методичка покрывает ЛР1–9, СРС (SIW), два дополнительных задания 10/12,
+управленческие артефакты и критерии оценивания.
+
+### Управленческие артефакты
+
+Шаблоны устава, реестра заинтересованных сторон, словаря СДР, RACI, реестра
+рисков, планов качества и коммуникаций, журнала изменений, отчётов о статусе
+и завершении — в [`docs/artifacts/templates/`](docs/artifacts/templates/).
+
+Заполненный пример для CONF-2026 собирается в один `.docx`:
+
+```bash
+python build_artifacts.py        # out/project-artifacts.docx
+```
+
+Источник — [`docs/artifacts/example-conference-2026.md`](docs/artifacts/example-conference-2026.md).
+Это документы для адаптации, а не автогенерация управленческих решений:
+часть полей нужно заменить на данные своего проекта.
+
+### Windows-ВМ
+
+Скрипты для машины с MS Project — в [`vm/`](vm/): полный прогон с watchdog,
+сверка `verify.json`, папка сдачи, checksums и снимок окружения без PII.
+Инструкция — [`vm/VM_AGENT.md`](vm/VM_AGENT.md).
 
 Готовые `.mpp` (проприетарный бинарь MS Project) уже лежат в `out/` — открывайте их
 напрямую в MS Project, без импорта XML. Если нужно пересобрать `.mpp` после изменения

@@ -33,6 +33,21 @@ additional-assignment/<variant>/project.yaml
 Валютный слой работает только при наличии блока `fx`. Курс хранится в YAML,
 поэтому сборка остаётся офлайн.
 
+## СРС (SIW) и методические указания
+
+```text
+siw/siw.yaml + project.yaml
+  → report_siw.blocks()       задания, артефакты, критерии
+  → out/siw-report.md/.docx   отчёт СРС (SIW)
+
+docs/guidelines/methodical-guidelines.md
+  → md_docx.parse()           заголовки, таблицы, списки, front matter
+  → out/methodical-guidelines.docx
+```
+
+Оба генератора не считают проект заново: числа берутся из `project.yaml` и
+`pm.analysis`, поэтому отчёт СРС не расходится с лабораторной частью.
+
 ## Параллельность
 
 `build.py` поднимает JVM в главном потоке, затем запускает генерацию XML в
