@@ -1,0 +1,30 @@
+name: Задача
+description: Предложить изменение в репозитории
+labels: ["task"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Цель
+      description: Что должно измениться.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Границы
+      description: Что входит и что не входит.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Критерии приёмки
+      placeholder: "- pytest проходит\n- ссылки не битые"
+    validations:
+      required: true
+  - type: input
+    id: refs
+    attributes:
+      label: Связанные ID
+      placeholder: "T-037, ADR-0002"

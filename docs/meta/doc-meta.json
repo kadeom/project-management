@@ -1,0 +1,56 @@
+{
+  "_note": "Реестр документов. Заполняется по мере роста docs/.",
+  "_sources": [
+    "https://diataxis.fr/"
+  ],
+  "documents": {
+    "ARCHITECTURE.md": {
+      "type": "explanation",
+      "owner": "maintainers"
+    },
+    "docs/guides/checklist.md": {
+      "type": "how-to",
+      "owner": "students"
+    },
+    "docs/reference/version-matrix.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "docs/reference/security-notes.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "schemas/project.schema.json": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "docs/guides/additional-assignment.md": {
+      "type": "how-to",
+      "owner": "students"
+    },
+    "docs/reference/infosec/README.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "docs/reference/infosec/prices.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "docs/reference/infosec/standards.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "additional-assignment/README.md": {
+      "type": "how-to",
+      "owner": "students"
+    },
+    "docs/glossary.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    },
+    "docs/reference/infosec/habr.md": {
+      "type": "reference",
+      "owner": "maintainers"
+    }
+  }
+}

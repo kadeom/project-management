@@ -1,0 +1,18 @@
+# Документация: https://git-scm.com/docs/gitattributes
+* text=auto eol=lf
+*.sh text eol=lf
+
+# Бинарные артефакты: MS Project, Word, изображения.
+*.mpp binary
+*.docx binary
+*.doc binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+
+# Сгенерированные артефакты не считаются исходным кодом.
+out/*.mpp linguist-generated=true
+out/*.docx linguist-generated=true
+out/*.xml linguist-generated=true

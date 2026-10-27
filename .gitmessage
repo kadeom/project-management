@@ -1,0 +1,11 @@
+# <type>(scope): <imperative summary>
+
+# What: что изменено.
+# Why: зачем, какую проблему решает.
+# How to verify: команда или шаг проверки.
+
+# Refs: T-037 | ADR-0002
+
+# type: feat | fix | docs | style | refactor | perf | test | build | ci | chore | revert
+# Спецификация: https://www.conventionalcommits.org/en/v1.0.0/
+# Шаблон: https://git-scm.com/docs/git-config#Documentation/git-config.txt-committemplate

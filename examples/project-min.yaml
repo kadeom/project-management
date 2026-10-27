@@ -1,0 +1,29 @@
+# Минимальный проект для проверки формата.
+# Не участвует в out/: build.py всегда читает project.yaml из корня.
+
+project:
+  name: "Минимальный проект"
+  short: "MIN"
+  author: "Студент"
+  start: 2026-10-05
+  currency: "₽"
+  currency_code: "RUB"
+
+calendar:
+  name: "Стандартный"
+  work_hours: [["08:00", "12:00"], ["13:00", "17:00"]]
+  exceptions: []
+
+resources:
+  - {key: PM, name: "Руководитель", type: work, rate: 1000}
+
+work_codes:
+  ОРГ: {name: "Организация", children: {ПОДГ: "Подготовка"}}
+dept_codes:
+  ОРГ: {name: "Оргкомитет", children: {КООРД: "Координация"}}
+
+phases:
+  - name: "Инициация"
+    tasks:
+      - {key: kick, name: "Старт", dur: 1, pert: [1, 1, 2], res: {PM: 1}, code: ОРГ.ПОДГ}
+      - {key: m_done, name: "Готово", dur: 0, after: [kick]}

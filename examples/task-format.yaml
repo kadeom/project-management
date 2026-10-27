@@ -1,0 +1,33 @@
+# Фрагмент project.yaml: поля задачи.
+# Файл не является полным проектом; см. project-min.yaml.
+
+phases:
+  - name: "Инициация"
+    tasks:
+      # Обычная задача: длительность в рабочих днях, PERT-оценки, ресурсы.
+      - key: kick
+        name: "Первое заседание оргкомитета"
+        dur: 1
+        pert: [1, 1, 2]
+        res: {PM: 1, SEC: 1}
+        code: ОРГ.ПОДГ
+        note: "Повестка дня и состав комитета."
+        link: "https://github.com/kadeom/project-management/blob/main/README.md"
+
+      # Связи: ОН (FS) — по умолчанию; НН+1 — начало-начало с задержкой 1 день.
+      - key: program
+        name: "Формирование программы"
+        dur: 3
+        after: [kick, "review:НН+1"]
+        res: {SEC: 1}
+        code: ПК.АНН
+        fixed_cost: 0
+        accrual: start
+        constraint: {type: SNET, date: 2026-10-05}
+        deadline: 2026-11-20
+
+      # Веха: dur: 0. Ресурсы у вехи запрещены тестом.
+      - key: m_program
+        name: "Программа утверждена"
+        dur: 0
+        after: [program]
